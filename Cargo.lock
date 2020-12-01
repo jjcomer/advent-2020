@@ -10,19 +10,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aoc-2020"
-version = "0.1.0"
-dependencies = [
- "aoc-runner",
- "aoc-runner-derive",
- "cached",
- "itertools",
- "lazy_static",
- "permute",
- "regex",
-]
-
-[[package]]
 name = "aoc-runner"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -49,6 +36,20 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+]
+
+[[package]]
+name = "aoc_2020"
+version = "0.1.0"
+dependencies = [
+ "aoc-runner",
+ "aoc-runner-derive",
+ "cached",
+ "itertools",
+ "lazy_static",
+ "md5",
+ "permute",
+ "regex",
 ]
 
 [[package]]
@@ -272,6 +273,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
+name = "md5"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
+
+[[package]]
 name = "memchr"
 version = "2.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -411,9 +418,9 @@ checksum = "6446ced80d6c486436db5c078dde11a9f73d42b57fb273121e160b84f63d894c"
 
 [[package]]
 name = "syn"
-version = "1.0.53"
+version = "1.0.48"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8833e20724c24de12bbaba5ad230ea61c3eafb05b881c7c9d3cfe8638b187e68"
+checksum = "cc371affeffc477f42a221a1e4297aedcea33d47d19b61455588bd9d8f6b19ac"
 dependencies = [
  "proc-macro2",
  "quote",

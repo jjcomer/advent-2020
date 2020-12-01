@@ -1,5 +1,5 @@
 [package]
-name = 'aoc-2020'
+name = 'aoc_2020'
 version = '0.1.0'
 authors = ['Josh Comer <joshjcomer@gmail.com>']
 edition = '2018'
@@ -10,8 +10,9 @@ bench = false
 [dependencies]
 aoc-runner = '0.3'
 aoc-runner-derive = '0.3'
-permute = '0.1'
 regex = '1.4'
-cached = '0.21'
+md5 = '0.7'
 lazy_static = '1.4'
+permute = '0.1'
+cached = '0.21'
 itertools = '0.9'
