@@ -3,11 +3,8 @@
    [jjcomer.util :as util]]
   (:require [clojure.java.io :as io]))
 
-(defn parse-input [input]
-  (->> input
-       java.io.StringReader.
-       java.io.BufferedReader.
-       line-seq
+(defn parse-input [lines]
+  (->> lines
        (map str/trim)
        (map #(Integer. %))))
 
