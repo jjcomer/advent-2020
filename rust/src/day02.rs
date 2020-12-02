@@ -40,9 +40,8 @@ fn check_password(password: &Password) -> bool {
 }
 
 fn check_password_2(password: &Password) -> bool {
-    let chars = password.password.chars().collect::<Vec<char>>();
-    let char_a = *chars.get(password.min - 1).unwrap() == password.check;
-    let char_b = *chars.get(password.max - 1).unwrap() == password.check;
+    let char_a = password.password.as_bytes()[password.min - 1] as char == password.check;
+    let char_b = password.password.as_bytes()[password.max - 1] as char == password.check;
 
     (char_a && !char_b) || (!char_a && char_b)
 }
