@@ -1,5 +1,3 @@
-use std::thread::current;
-
 #[aoc_generator(day11)]
 pub fn parse_input(input: &str) -> Vec<Vec<char>> {
     input.lines().map(|l| l.trim().chars().collect()).collect()
