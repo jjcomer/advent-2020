@@ -66,7 +66,7 @@ pub fn solve_part1(input: &Vec<Action>) -> usize {
             Action::Mask {
                 add,
                 remove,
-                floating,
+                floating: _floating,
             } => {
                 add_mask = *add;
                 remove_mask = *remove;
@@ -99,7 +99,7 @@ pub fn solve_part2(input: &Vec<Action>) -> usize {
         match action {
             Action::Mask {
                 add,
-                remove,
+                remove: _remove,
                 floating,
             } => {
                 add_mask = *add;
