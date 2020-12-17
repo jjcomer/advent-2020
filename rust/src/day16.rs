@@ -1,10 +1,13 @@
+use cached::proc_macro::cached;
+use cached::stores::UnboundCache;
 use im;
+use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::collections::HashSet;
 
 //departure location: 27-840 or 860-957
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Rule {
     name: String,
     min1: i64,
@@ -74,13 +77,11 @@ fn remove_bad_tickets(rules: &[Rule], tickets: &[Vec<i64>]) -> Vec<Vec<i64>> {
         .collect()
 }
 
-fn test_ticket(rules: &[&Rule], ticket: &[i64]) -> bool {
-    rules
-        .iter()
-        .zip(ticket.iter())
-        .all(|(r, n)| r.check_within(n))
-}
-
+#[cached(
+    convert = r#"{format!("{:?}",rules_picked.iter().map(|r| &r.name).sorted().collect::<Vec<_>>())}"#,
+    create = "{UnboundCache::new()}",
+    type = "UnboundCache<String,Option<Vec<Rule>>>"
+)]
 fn check_possibility(
     rules_picked: im::HashSet<Rule>,
     current_rules: im::Vector<Rule>,
