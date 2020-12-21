@@ -44,6 +44,7 @@ version = "0.1.0"
 dependencies = [
  "aoc-runner",
  "aoc-runner-derive",
+ "apply",
  "cached",
  "im",
  "itertools",
@@ -51,6 +52,12 @@ dependencies = [
  "num",
  "regex",
 ]
+
+[[package]]
+name = "apply"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f47b57fc4521e3cae26a4d45b5227f8fadee4c345be0fefd8d5d1711afb8aeb9"
 
 [[package]]
 name = "async-mutex"
