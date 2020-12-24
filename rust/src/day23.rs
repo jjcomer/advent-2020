@@ -1,8 +1,9 @@
 use im::hashset;
-use im::HashMap;
+//use im::HashMap;
 use im::Vector;
 use itertools::Itertools;
 use num::range;
+use std::collections::HashMap;
 
 #[aoc_generator(day23)]
 pub fn parse_input(input: &str) -> Vector<usize> {
@@ -75,7 +76,7 @@ fn do_turn2(mut cups: HashMap<usize, usize>, current: usize) -> (HashMap<usize, 
     cups.insert(destination, one);
     cups.insert(three, destination_pointer);
 
-    (cups.clone(), next_current)
+    (cups, next_current)
 }
 
 fn final_result(mut cups: Vector<usize>) -> String {
