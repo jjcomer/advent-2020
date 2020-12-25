@@ -1,7 +1,7 @@
 use im::HashMap;
 use im::Vector;
 use itertools::Itertools;
-use itertools::MinMaxResult::{MinMax, NoElements, OneElement};
+use itertools::MinMaxResult::MinMax;
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum Direction {
@@ -180,13 +180,8 @@ pub fn solve_part1(input: &Vector<Vector<Direction>>) -> usize {
 pub fn solve_part2(input: &Vector<Vector<Direction>>) -> usize {
     let mut tiles = flip_tiles(input.clone());
 
-    for i in 0..100 {
+    for _ in 0..100 {
         tiles = perform_day(tiles);
-        // println!(
-        //     "Day {}, Count {}",
-        //     i,
-        //     tiles.iter().filter(|(_, black)| **black).count()
-        // );
     }
     tiles.iter().filter(|(_, black)| **black).count()
 }
