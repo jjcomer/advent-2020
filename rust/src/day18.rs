@@ -1,4 +1,8 @@
+use std::ptr::eq;
+
 use im::Vector;
+
+//https://thealgorists.azurewebsites.net/Algo/Infix
 
 #[aoc_generator(day18)]
 pub fn parse_input(input: &str) -> Vector<Vector<char>> {
@@ -59,9 +63,64 @@ fn find_matching(equation: Vector<char>) -> usize {
     panic!("Couldn't find the matching paren {:?}", equation);
 }
 
-fn add_parens(equation: Vector<char>) -> Vector<char> {
-    let mut new_equation = equation.clone();
-    new_equation
+fn do_math(op: char, lhs: usize, rhs: usize) -> usize {
+    if op == '+' {
+        lhs + rhs
+    } else {
+        lhs * rhs
+    }
+}
+
+fn eval_p2(input: &Vector<char>) -> usize {
+    let mut equation = input.clone();
+    let mut operands = Vector::new();
+    let mut operators = Vector::new();
+
+    loop {
+        // println!(
+        //     "EQ:{:?}\nOPER:{:?}\nOPRA:{:?}",
+        //     equation, operators, operands
+        // );
+        if equation.is_empty() {
+            loop {
+                if let Some(head) = operators.pop_front() {
+                    let lhs = operands.pop_front().unwrap();
+                    let rhs = operands.pop_front().unwrap();
+                    operands.push_front(do_math(head, lhs, rhs));
+                } else {
+                    break;
+                }
+            }
+            return operands.pop_front().unwrap();
+        }
+        let head = equation.pop_front().unwrap();
+        match head {
+            '(' => operators.push_front(head),
+            ')' => loop {
+                let head = operators.pop_front().unwrap();
+                if head == '(' {
+                    break;
+                } else {
+                    let lhs = operands.pop_front().unwrap();
+                    let rhs = operands.pop_front().unwrap();
+                    operands.push_front(do_math(head, lhs, rhs))
+                }
+            },
+            '+' => operators.push_front(head),
+            '*' => loop {
+                if *operators.head().unwrap_or(&'*') == '+' {
+                    let lhs = operands.pop_front().unwrap();
+                    let rhs = operands.pop_front().unwrap();
+                    let op = operators.pop_front().unwrap();
+                    operands.push_front(do_math(op, lhs, rhs));
+                } else {
+                    operators.push_front(head);
+                    break;
+                }
+            },
+            head => operands.push_front(head.to_digit(10).unwrap() as usize),
+        };
+    }
 }
 
 #[aoc(day18, part1)]
@@ -85,6 +144,11 @@ pub fn solve_part1(input: &Vector<Vector<char>>) -> usize {
         .sum()
 }
 
+#[aoc(day18, part2)]
+pub fn solve_part2(input: &Vector<Vector<char>>) -> usize {
+    input.iter().map(eval_p2).sum()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -93,5 +157,19 @@ mod tests {
     fn part_1() {
         let input = parse_input("2 * 3 + (4 * 5)");
         assert_eq!(26, solve_part1(&input));
+    }
+
+    #[test]
+    fn part_2() {
+        let tests = vec![
+            ("1 + (2 * 3) + (4 * (5 + 6))", 51),
+            ("2 * 3 + (4 * 5)", 46),
+            ("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))", 669060),
+            ("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", 23340),
+        ];
+        for (eq, expected) in tests {
+            let input = parse_input(eq);
+            assert_eq!(expected as usize, eval_p2(input.head().unwrap()));
+        }
     }
 }
