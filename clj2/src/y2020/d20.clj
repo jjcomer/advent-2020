@@ -1,23 +1,48 @@
 (ns y2020.d20
   (:require [clojure.test :as t :refer [deftest]]
             [clojure.set :as set]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.pprint :as pp]))
 
 ;; PROBLEM LINK https://adventofcode.com/2020/day/20
 
 ;; Solution Logic
 
 (defn neighbour? [tile-a tile-b]
-  (seq (set/intersection (set (vals (:edges tile-a)))
-                         (set (vals (:edges tile-b))))))
+  (set/intersection (set (vals (:edges tile-a)))
+                    (set (vals (:edges tile-b)))))
 
 (defn find-neighbours [grid]
   (map (fn [tile-a]
-         (assoc tile-a
-                :neighbours
-                (map :id (filter (fn [tile-b] (neighbour? tile-a tile-b))
-                                 (filter #(not= tile-a %) grid)))))
+         (let [neighbours (map (fn [tile-b]
+                                 (let [edges (neighbour? tile-a tile-b)]
+                                   {:id (:id tile-b)
+                                    :edge (reduce-kv (fn [acc orientation edge]
+                                                       (if (edges edge)
+                                                         (assoc acc orientation edge)
+                                                         acc))
+                                                     {}
+                                                     (:edges tile-a))}))
+                               (filter (fn [tile-b] (seq (neighbour? tile-a tile-b)))
+                                       (filter #(not= tile-a %) grid)))]
+           (assoc tile-a :neighbours neighbours)))
        grid))
+
+(defn get-east [tile]
+  (map last tile))
+
+(defn get-west [tile]
+  (map first tile))
+
+(defn get-south [tile]
+  (last tile))
+
+(defn get-north [tile]
+  (first tile))
+
+(defn n-s-match [test-tile n-tile s-tile]
+  (let [fixed-north (get-south (:base-tile n-tile))
+        possible-orientations (filter #(= fixed-north (get-north %)) (:rotatations test-tile))]))
 
 (def sample-tile
   "Tile 2311:
@@ -37,26 +62,43 @@
   (mapv #(mapv (fn [l] (nth l %)) tile)
         (range (count tile))))
 
-(defn flip [tile]
+(defn h-flip [tile]
   (mapv rseq tile))
+
+(defn v-flip [tile]
+  (rseq tile))
 
 (defn rotations [tile]
   (let [north tile
-        f-north (flip north)
+        f-north (h-flip north)
+        v-north (v-flip f-north)
         east (rotate north)
-        f-east (flip east)
+        f-east (h-flip north)
+        v-east (v-flip f-north)
         south (rotate east)
-        f-south (flip south)
+        f-south (h-flip east)
+        v-south (v-flip f-east)
         west (rotate south)
-        f-west (flip west)]
+        f-west (h-flip south)
+        v-west (v-flip f-south)
+        xtra (rotate west)
+        f-xtra (h-flip west)
+        v-xtra (v-flip f-west)]
     (into #{} [north
                f-north
+               v-north
                east
                f-east
+               v-east
                south
                f-south
+               v-south
                west
-               f-west])))
+               f-west
+               v-west
+               xtra
+               f-xtra
+               v-xtra])))
 
 (defn all-edges [tile]
   (let [north (first tile)
@@ -84,6 +126,9 @@
      :edges (all-edges tile)
      :rotations (rotations tile)}))
 
+(defn orient-tile [tiles the-grid x y]
+  (when (and (pos? x) (pos? y) (< x (count the-grid)) (< y (count the-grid)))))
+
 ;; Entry Points
 
 (defn generator
@@ -95,7 +140,12 @@
   "The solution to part 1. Will be called with the result of the generator"
   [input]
   (let [the-grid (find-neighbours input)]
+    (println (Math/sqrt (count the-grid)))
     (println (map #(count (:neighbours %)) the-grid))
+    (println (map #(count (:rotations %)) the-grid))
+    (pp/pprint (:neighbours (first the-grid)))
+    (println)
+    (pp/pprint (:neighbours (first (filter #(= 2 (count (:neighbours %))) the-grid))))
     (apply * (map :id (filter #(= 2 (count (:neighbours %))) the-grid)))))
 
 (defn solve-part-2
