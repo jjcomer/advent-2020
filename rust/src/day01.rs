@@ -24,3 +24,13 @@ pub fn solve_part2(input: &Vec<i32>) -> i32 {
     }
     -1
 }
+
+pub fn filter_by_bit_pos<'a>(
+    input: &'a [&'a str],
+    pos: usize,
+    by: char,
+) -> impl Iterator<Item = &'a &'a str> {
+    input
+        .iter()
+        .filter(move |line| line.chars().nth(0).unwrap() == by)
+}
